@@ -1,9 +1,9 @@
 {
   "name": "react-native-sliding-up-down-panels",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "private": false,
-  "url" : "https://github.com/Abhijeet-Ashapure/react-native-sliding-up-down-panel.git"
-    , "email" : "abhijeetashapure@gmail.com",
+  "url": "https://github.com/Abhijeet-Ashapure/react-native-sliding-up-down-panel.git",
+  "email": "abhijeetashapure@gmail.com",
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "test": "jest"

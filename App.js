@@ -1,58 +1,236 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
- */
-
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import {
   Platform,
   StyleSheet,
   Text,
-  View
+  View,
+  Animated,
+  Dimensions,
+  PanResponder,
+  TouchableOpacity,
 } from 'react-native';
+const { width, height } = Dimensions.get('window');
+let sliderPosition = 0;
 
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' +
-    'Cmd+D or shake for dev menu',
-  android: 'Double tap R on your keyboard to reload,\n' +
-    'Shake or press menu button for dev menu',
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  
+  headerPanelViewStyle: {
+    width,
+    backgroundColor: '#ff0032',
+    position: 'absolute',
+    alignSelf: 'flex-end',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 1
+  },
 });
 
-type Props = {};
-export default class App extends Component<Props> {
+const HeaderView = (props) => (
+    <View style={{backgroundColor: 'green',}}><Text style={{color: 'white'}}>Hello world</Text></View>
+  )
+  
+  const SlidingPanelView = (props) => (
+    <View style={{height: 200, width, backgroundColor: 'blue'}}><Text style={{color: 'white'}}>Hello world</Text></View>
+  )
+
+const SlidingPanelIOS = (props) => (
+  <Animated.View style={props.panelPosition === 'bottom' ? {bottom: props.heightAnim, flex: 1, position: 'absolute',} : {top: props.heightAnim, flex: 1, position: 'absolute',}}>
+    <Animated.View
+            {...props.panResponder} style={{height: props.headerPanelHeight,}}>   
+      {props.headerView()}
+    </Animated.View>
+    <View style={props.panelPosition === 'bottom' ? {top: props.headerPanelHeight, left: 0, position: 'absolute',} : {bottom: props.headerPanelHeight, left: 0, position: 'absolute',}}>
+      {props.slidingPanelView()}
+    </View>
+  </Animated.View>
+);
+
+const SlidingPanelAndroid = (props) => (
+    <Animated.View style={props.panelPosition === 'bottom' ? {bottom: props.heightAnim, flex: 1, position: 'absolute',} : {top: props.heightAnim, flex: 1, position: 'absolute',}}>
+    <Animated.View
+            {...props.panResponder} style={{height: props.headerPanelHeight -25,}}>   
+      {props.headerView()}
+    </Animated.View>
+    <Animated.View style={props.panelPosition === 'bottom' ? {top: props.headerPanelHeight -25, left: 0, position: 'absolute',} : {bottom: props.headerPanelHeight, left: 0, position: 'absolute',}}>
+      {props.slidingPanelView()}
+    </Animated.View>
+  </Animated.View>
+);
+
+export default class SlidingPanel extends Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      heightAnim: new Animated.Value(0),
+      panResponder: {},
+    };
+  }
+
+  componentWillMount() {
+    var a = 0;
+    this.state.panResponder = PanResponder.create({
+      onStartShouldSetPanResponder : () => true,
+      onPanResponderGrant: (evt, gestureState) => {
+        a = 0;
+      },
+      onPanResponderMove: (event, gestureState) => {
+        if(this.props.allowDragging) {
+          if(a === 0) {
+            this.props.onDragStart(event, gestureState);
+          }
+          else {
+            this.props.onDrag(event, gestureState);
+          }
+          if(this.props.panelPosition === 'bottom') {
+            a = gestureState.dy * -1;
+          }
+          else {
+            a = gestureState.dy * 1;
+          }
+          if(sliderPosition + a < height - (this.props.headerLayoutHeight -2) && sliderPosition + a > -2){
+            if(sliderPosition !== 0) {
+              this.state.heightAnim.setValue(sliderPosition + a)
+            }
+            else {
+              this.state.heightAnim.setValue(a)
+            }
+          }
+        }
+      },
+      onPanResponderRelease        : (e, gesture) => {
+        sliderPosition = sliderPosition + a
+        if(a !== 0) {
+          this.props.onDragStop(e, gesture)
+        }
+        
+        if(this.props.allowAnimation) {
+          if(a === 0 || (this.props.panelPosition === 'bottom' ? gesture.vy < -1 : gesture.vy > 1)) {
+            if(sliderPosition < height-this.props.headerLayoutHeight) {
+              sliderPosition = height-this.props.headerLayoutHeight
+              this.props.onAnimationStart();
+              Animated.timing(
+                this.state.heightAnim,
+                {
+                  toValue: height-this.props.headerLayoutHeight,
+                  duration: this.props.AnimationSpeed,
+                }
+              ).start(() => this.props.onAnimationStop());
+            }
+            else {
+              sliderPosition = 0
+              this.props.onAnimationStart();
+              Animated.timing(
+                this.state.heightAnim,
+                {
+                  toValue: 0,
+                  duration: this.props.AnimationSpeed,
+                }
+              ).start(() => this.props.onAnimationStop()); 
+            }
+          }
+          if(this.props.panelPosition === 'bottom' ? gesture.vy > 1 : gesture.vy < -1) {
+            sliderPosition = 0
+            this.props.onAnimationStart();
+            Animated.timing(
+              this.state.heightAnim,
+              {
+                toValue: 0,
+                duration: this.props.AnimationSpeed,
+              }
+            ).start(() => this.props.onAnimationStop());
+          }
+        }
+      },
+    });
+  }
+
+  onRequestClose() {
+    sliderPosition = 0
+    Animated.timing(
+      this.state.heightAnim,
+      {
+        toValue: 0,
+        duration: this.props.AnimationSpeed,
+      }
+    ).start();
+  }
+
+  onRequestStart() {
+    sliderPosition = height-this.props.headerLayoutHeight
+    Animated.timing(
+      this.state.heightAnim,
+      {
+        toValue: height-this.props.headerLayoutHeight,
+        duration: this.props.AnimationSpeed,
+      }
+    ).start();
+  }
+
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to React Native!
-        </Text>
-        <Text style={styles.instructions}>
-          To get started, edit App.js
-        </Text>
-        <Text style={styles.instructions}>
-          {instructions}
-        </Text>
+        {
+          Platform.OS === 'ios' && this.props.visible === true ?
+            <SlidingPanelIOS
+                panResponder = {this.state.panResponder.panHandlers}
+                panelPosition={this.props.panelPosition}
+                headerPanelHeight={this.props.headerLayoutHeight}
+                headerView = {() => this.props.headerLayout()}
+                heightAnim={this.state.heightAnim}
+                visible={this.props.visible}
+                slidingPanelView={() => this.props.slidingPanelLayout()}
+            /> : this.props.visible === true &&
+            <SlidingPanelAndroid
+                panResponder = {this.state.panResponder.panHandlers}
+                panelPosition={this.props.panelPosition}
+                headerPanelHeight={this.props.headerLayoutHeight}
+                headerView = {() => this.props.headerLayout()}
+                heightAnim={this.state.heightAnim}
+                visible={this.props.visible}
+                slidingPanelView={() => this.props.slidingPanelLayout()}
+            />
+        }
       </View>
     );
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-});
+SlidingPanel.propTypes = {
+  headerLayoutHeight: PropTypes.number.isRequired,
+  headerLayout: PropTypes.func.isRequired,
+  slidingPanelLayout: PropTypes.func.isRequired,
+
+  AnimationSpeed: PropTypes.number,
+  slidingPanelLayoutHeight: PropTypes.number,
+  panelPosition: PropTypes.string,
+  visible: PropTypes.boolean,
+  allowDragging: PropTypes.boolean,
+  allowAnimation: PropTypes.boolean,
+  onDragStart: (event, gestureState) => {},
+  onDragStop: (event, gestureState) => {},
+  onDrag: (event, gestureState) => {},
+  onAnimationStart: () => {},
+  onAnimationStop: () => {},
+};
+
+SlidingPanel.defaultProps = {
+  panelPosition: 'bottom',
+  headerLayoutHeight: 100,
+  headerLayout: () => {},
+  visible: true,
+  onDragStart: (event, gestureState) => {},
+  onDragStop: (event, gestureState) => {},
+  onDrag: (event, gestureState) => {},
+  onAnimationStart: () => {},
+  onAnimationStop: () => {},
+  slidingPanelLayout: () => {},
+  allowDragging: true,
+  allowAnimation: true,
+  slidingPanelLayoutHeight: 0,
+  AnimationSpeed: 1000,
+};

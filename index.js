@@ -1,4 +1,4 @@
 import { AppRegistry } from 'react-native';
-import App from './App';
+import SlidingPanel from './App';
 
-AppRegistry.registerComponent('slidingPanel', () => App);
+AppRegistry.registerComponent('slidingPanel', () => SlidingPanel);

@@ -1,6 +1,6 @@
 {
-  "name": "react-native-sliding-up-down-panel",
-  "version": "0.0.3",
+  "name": "react-native-sliding-up-down-panels",
+  "version": "0.0.4",
   "private": false,
   "url": "https://github.com/Abhijeet-Ashapure/react-native-sliding-up-down-panel.git",
   "email": "abhijeetashapure@gmail.com",
@@ -23,8 +23,7 @@
     "Sliding up panel for android and ios"
   ],
   "dependencies": {
-    "react": "16.3.1",
-    "react-native": "0.55.3"
+    "react": "16.3.1"
   },
   "devDependencies": {
     "babel-jest": "22.4.3",

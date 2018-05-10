@@ -23,7 +23,7 @@ An Awesome fully Customizable library of react native for sliding panels purely 
 npm install react-native-sliding-up-down-panels --save
 ```
 
-Copy it and paste into the terminal in your project directory. For more information on npm install, please visit their [official page](https://docs.npmjs.com/getting-started/installing-npm-packages-locally)
+Copy and paste into the terminal in your project directory. For more information on npm install, please visit their [official page](https://docs.npmjs.com/getting-started/installing-npm-packages-locally)
 
 Note : We will soon provide the installation using yarn
 

@@ -4,10 +4,24 @@
   "private": false,
   "url": "https://github.com/Abhijeet-Ashapure/react-native-sliding-up-down-panel.git",
   "email": "abhijeetashapure@gmail.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Abhijeet-Ashapure/react-native-sliding-up-down-panel.git"
+  },
+  "description": "Sliding up and sliding down panels for android and ios | react native",
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "test": "jest"
   },
+  "keywords": [
+    "Sliding up",
+    "Sliding down",
+    "Sliding up panel",
+    "Sliding down panel",
+    "Sliding up panel for android",
+    "Sliding up panel for ios",
+    "Sliding up panel for android and ios"
+  ],
   "dependencies": {
     "react": "16.3.1",
     "react-native": "0.55.3"

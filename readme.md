@@ -108,7 +108,6 @@ If you are wrapping header layout inside a view, please make sure the height of 
 
 # Props
 
-
 | Property | Type | Description | Platform
 | --- | --- | --- | --- |
 | headerLayoutHeight | number | Header height of sliding panel | android, ios
@@ -117,9 +116,10 @@ If you are wrapping header layout inside a view, please make sure the height of 
 | AnimationSpeed | number | Animation speed, (in millisecond) | android, ios
 | slidingPanelLayoutHeight |number | Panel height of sliding panel | android, ios
 | panelPosition | string | "top" or "bottom" | android, ios
-| visible | booolean | to show/hide sliding panel | android, ios
-| allowDragging | booolean | allow sliding panel to drag | android, ios
-| allowAnimation | booolean | allow sliding panel to animate | android, ios
+| drawUnderStatusBar | boolean | to let the slider go under the status bar | android
+| visible | boolean | to show/hide sliding panel | android, ios
+| allowDragging | boolean | allow sliding panel to drag | android, ios
+| allowAnimation | boolean | allow sliding panel to animate | android, ios
 | onDragStart | function(event, gestureState) | returns event, gestureState | android, ios
 | onDragStop | function(event, gestureState) | returns event, gestureState | android, ios
 | onDrag | function(event, gestureState) | returns event, gestureState | android, ios

@@ -147,24 +147,26 @@ export default class SlidingPanel extends Component {
 
   onRequestClose() {
     sliderPosition = 0
+    this.props.onAnimationStart();
     Animated.timing(
       this.state.heightAnim,
       {
         toValue: 0,
         duration: this.props.AnimationSpeed,
       }
-    ).start();
+    ).start(() => this.props.onAnimationStop());
   }
 
   onRequestStart() {
     sliderPosition = (this.props.slidingPanelLayoutHeight ? this.props.slidingPanelLayoutHeight : height-this.props.headerLayoutHeight)
+    this.props.onAnimationStart();
     Animated.timing(
       this.state.heightAnim,
       {
         toValue: Platform.OS === 'android' ? (this.props.slidingPanelLayoutHeight ? this.props.slidingPanelLayoutHeight : height-this.props.headerLayoutHeight - 25) : (this.props.slidingPanelLayoutHeight ? this.props.slidingPanelLayoutHeight : height-this.props.headerLayoutHeight),
         duration: this.props.AnimationSpeed,
       }
-    ).start();
+    ).start(() => this.props.onAnimationStop());
   }
 
   render() {
